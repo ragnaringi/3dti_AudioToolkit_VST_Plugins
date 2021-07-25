@@ -4,7 +4,7 @@
 
 #define MyAppName "3DTI Toolkit VST"
 #define MyAppPublisher "3D Tune-In"
-#define MyAppURL "https://www.3d-tune-in.eu"
+#define MyAppURL "http://www.3d-tune-in.eu"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -12,7 +12,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{30BAF99F-B01C-4A65-ACCC-C7F997F22D58}
 AppName={#MyAppName}
-AppVersion=1.1.1
+AppVersion=1.1.2
 ;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
@@ -21,7 +21,7 @@ AppUpdatesURL={#MyAppURL}
 UsePreviousAppDir=no
 DisableDirPage=no
 CreateAppDir=no       
-OutputBaseFilename=3DTI_Toolkit_VST_plugins_WIN_Installer_x64-v1.1.1
+OutputBaseFilename=3DTI_Toolkit_VST_plugins_WIN_Installer_x64-v1.1.2
 Compression=lzma
 SolidCompression=yes
 ArchitecturesInstallIn64BitMode=x64
