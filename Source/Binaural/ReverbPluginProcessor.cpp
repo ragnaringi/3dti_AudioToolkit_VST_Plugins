@@ -2,7 +2,7 @@
 * \class ReverbPluginProcessor
 *
 * \brief Declaration of ReverbPluginProcessor interface.
-* \date  December 2020
+* \date  October 2021
 *
 * \authors Reactify Music LLP: R. Hrafnkelsson ||
 * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||
@@ -260,7 +260,7 @@ void ReverbPluginProcessor::updateHostParameters()
       {"Reverb Enabled", getReverbProcessor().reverbEnabled},
       {"Reverb Level", getReverbProcessor().reverbLevel},
       {"Reverb Attenuation", getReverbProcessor().reverbDistanceAttenuation},
-      {"BRIR", getReverbProcessor().getBrirIndex() },
+      {"BRIR", getReverbProcessor().reverbBRIR.get() },
     };
 
     for ( auto const & parameter : parameters )
@@ -285,7 +285,7 @@ void ReverbPluginProcessor::parameterChanged(const String& parameterID, float ne
     } else if ( parameterID == "Reverb Attenuation" ) {
         mReverb.reverbDistanceAttenuation = newValue;
     } else if ( parameterID == "BRIR" ) {
-        mReverb.loadBRIR((int)newValue);
+        mReverb.reverbBRIR = roundToInt (newValue);
     }
 }
 
