@@ -30,6 +30,7 @@ ReverbProcessor::ReverbProcessor (Binaural::CCore& core)
   ,  reverbLevel ("Reverb Level", "Reverb Level", NormalisableRange<float> (-30.f, 6.f, 0.1f), -3.f)
   ,  reverbDistanceAttenuation ("Reverb Distance Attenuation", "Reverb Distance Attenuation", NormalisableRange<float> (-6.f, 0.f, 0.1f), -3.f)
   ,  reverbBRIR ("Reverb BRIR", "Reverb BRIR", 0, BundledBRIRs.size() + 1, 0)
+  ,  reverbOrder ("Reverb Order", "Reverb Order", 0, 2, 1)
   ,  mCore (core)
 {
     // Environment setup
@@ -61,9 +62,7 @@ void ReverbProcessor::process (AudioBuffer<float>& buffer)
         return;
     }
     
-    auto magnitudes = mCore.GetMagnitudes();
-    magnitudes.SetReverbDistanceAttenuation (reverbDistanceAttenuation);
-    mCore.SetMagnitudes (magnitudes);
+    updateParameters();
     
     Common::CEarPair<CMonoBuffer<float>> outputBuffer;
     mEnvironment->ProcessVirtualAmbisonicReverb (outputBuffer.left,
@@ -104,9 +103,7 @@ void ReverbProcessor::process (AudioBuffer<float>& quadIn, AudioBuffer<float>& s
     jassert (quadIn.getNumChannels() == 4);
     jassert (stereoOut.getNumChannels()  >= 2);
     
-    auto magnitudes = mCore.GetMagnitudes();
-    magnitudes.SetReverbDistanceAttenuation (reverbDistanceAttenuation);
-    mCore.SetMagnitudes (magnitudes);
+    updateParameters();
     
     int numSamples = stereoOut.getNumSamples();
     
@@ -120,24 +117,20 @@ void ReverbProcessor::process (AudioBuffer<float>& quadIn, AudioBuffer<float>& s
         
         mEnvironment->ProcessEncodedChannelReverb (TBFormatChannel(ch), input, outputBuffer);
         
-        // If BRIR is not loaded, buffer will be set to zero
-        if (outputBuffer.size() == 0)
-        {
-            stereoOut.clear();
-            return;
-        }
-        
         // Fill the output with processed audio
         jassert (outputBuffer.GetNChannels() == 2);
         
-        numSamples = (int)outputBuffer.GetNsamples();
+        auto outLeft  = outputBuffer.GetMonoChannel (0);
+        auto outRight = outputBuffer.GetMonoChannel (1);
         
-        jassert (numSamples == stereoOut.getNumSamples());
+        numSamples = (int)outputBuffer.GetNsamples();
+
+        jassert (numSamples <= stereoOut.getNumSamples());
         
         for (int i = 0; i < numSamples; i++)
         {
-            stereoOut.getWritePointer(0)[i] += outputBuffer.GetMonoChannel (0)[i];
-            stereoOut.getWritePointer(1)[i] += outputBuffer.GetMonoChannel (1)[i];
+            stereoOut.getWritePointer(0)[i] += outLeft[i];
+            stereoOut.getWritePointer(1)[i] += outRight[i];
         }
     }
     
@@ -288,6 +281,16 @@ void ReverbProcessor::resetBRIRIndex()
         reverbBRIR = reverbBRIR.getRange().getEnd() - 1;
     
     sendChangeMessage();
+}
+
+//==============================================================================
+void ReverbProcessor::updateParameters()
+{
+    auto magnitudes = mCore.GetMagnitudes();
+    magnitudes.SetReverbDistanceAttenuation (reverbDistanceAttenuation);
+    mCore.SetMagnitudes (magnitudes);
+    
+    mEnvironment->SetReverberationOrder (TReverberationOrder (reverbOrder.get()));
 }
 
 //==============================================================================

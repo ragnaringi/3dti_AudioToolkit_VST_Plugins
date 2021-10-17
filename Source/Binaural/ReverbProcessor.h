@@ -65,6 +65,7 @@ public:
     AudioParameterBool  reverbEnabled;
     AudioParameterFloat reverbLevel;               // ranges from -30 to +6 dB
     AudioParameterFloat reverbDistanceAttenuation; // ranges from -6 to 0 dB
+    AudioParameterInt   reverbOrder;               // ranges from 0 to 2
     
     /** The index of the currently selected BRIR. Setting this will trigger a BRIR reload.
         
@@ -91,6 +92,8 @@ private:
     bool doLoadBRIR (const File& file);
     
     void resetBRIRIndex();
+    
+    void updateParameters();
     
     double getSampleRate();
     
