@@ -34,7 +34,7 @@ class ReverbControls  : public Component, public ChangeListener, public Slider::
 public:
     //==========================================================================
     /** Constructor */
-    ReverbControls(Toolkit3dtiPluginAudioProcessor& processor);
+    ReverbControls (Toolkit3dtiPluginAudioProcessor& processor);
     
     /** Destructor */
     ~ReverbControls();
