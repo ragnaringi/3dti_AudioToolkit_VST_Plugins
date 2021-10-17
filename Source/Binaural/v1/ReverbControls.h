@@ -29,11 +29,13 @@
 /*
  */
 
-class ReverbControls : public Component, public Slider::Listener {
+class ReverbControls  : public Component, public ChangeListener, public Slider::Listener
+{
 public:
+  //============================================================================
   ReverbControls(Toolkit3dtiPluginAudioProcessor& processor);
   
-  ~ReverbControls() {}
+  ~ReverbControls();
   
   void paint (Graphics& g) override {
     g.fillAll(getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
@@ -68,18 +70,13 @@ public:
     }
   }
   
-  void brirMenuChanged() {
-    auto text = brirMenu.getText();
-    if ( text == "Load 3DTI" ) {
-      loadCustomBRIR ("*.3dti-brir");
-    } else if ( text == "Load SOFA" ) {
-      loadCustomBRIR ("*.sofa");
-    } else {
-      mReverb.loadBRIR (getBundledBRIR (brirMenu.getSelectedItemIndex(), mProcessor.getSampleRate()));
-    }
+  void brirMenuChanged()
+  {
+    mReverb.reverbBRIR = brirMenu.getSelectedItemIndex();
   }
-  
-  void loadCustomBRIR(String fileTypes);
+    
+  //============================================================================
+  void changeListenerCallback (ChangeBroadcaster* source) override;
   
   ToggleButton bypassToggle;
   

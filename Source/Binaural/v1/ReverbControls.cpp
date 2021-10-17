@@ -2,7 +2,7 @@
 * \class ReverbControls
 *
 * \brief Declaration of ReverbControls interface.
-* \date  June 2019
+* \date  October 2021
 *
 * \authors Reactify Music LLP: R. Hrafnkelsson ||
 * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||
@@ -20,19 +20,16 @@
 
 #include "ReverbControls.h"
 
-ReverbControls::ReverbControls(Toolkit3dtiPluginAudioProcessor& p)
-  : mProcessor(p),
+ReverbControls::ReverbControls (Toolkit3dtiPluginAudioProcessor& p)
+  : mProcessor (p),
     mReverb (p.getReverbProcessor()),
-    gainLabel("Level Label", "Level [dB]"),
-    distanceAttenuationLabel("Distance Label", "dB attenuation per double distance")
+    gainLabel ("Level Label", "Level [dB]"),
+    distanceAttenuationLabel ("Distance Label", "dB attenuation per double distance")
 {
-  std::vector<String> options = {"Small", "Medium", "Large", "Library", "Trapezoid", "Load 3DTI", "Load SOFA"};
-  for ( int i = 0; i < options.size(); i++ ) {
-    brirMenu.addItem( options[i], i+1 ); // IDs must be non-zero
-  }
+  brirMenu.addItemList (mReverb.getBRIROptions(), 1);
   brirMenu.onChange = [this] { brirMenuChanged(); };
-  brirMenu.setSelectedId(1, dontSendNotification);
-  addAndMakeVisible( brirMenu );
+  brirMenu.setSelectedId (1, dontSendNotification);
+  addAndMakeVisible (brirMenu);
   
   setLabelStyle( gainLabel );
   gainLabel.setJustificationType( Justification::left );
@@ -63,17 +60,19 @@ ReverbControls::ReverbControls(Toolkit3dtiPluginAudioProcessor& p)
   bypassToggle.setToggleState(true, dontSendNotification);
   bypassToggle.onClick = [this] { updateBypass(); };
   addAndMakeVisible( bypassToggle );
+    
+  mReverb.addChangeListener (this);
   
   updateGui();
-  
-    /*
-  mReverb.didReloadBRIR = [this] {
-    updateBrirLabel();
-  };
-     */
 }
 
-void ReverbControls::updateGui() {
+ReverbControls::~ReverbControls()
+{
+    mReverb.removeChangeListener (this);
+}
+
+void ReverbControls::updateGui()
+{
   gainSlider.setValue(mReverb.reverbLevel.get(), dontSendNotification);
   distanceAttenuationSlider.setValue(mReverb.reverbDistanceAttenuation, dontSendNotification );
   
@@ -87,33 +86,6 @@ void ReverbControls::updateGui() {
   }
 }
 
-void ReverbControls::loadCustomBRIR(String fileTypes) {
-    fc.reset (new FileChooser ("Choose a file to open...",
-                               BRIRDirectory(),
-                               fileTypes,
-                               true));
-  
-    fc->showDialog (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, nullptr);
-    
-    auto results = fc->getURLResults();
-    if (results.isEmpty())
-    {
-        updateBrirLabel();
-        return;
-    }
-    
-    auto result = results.getFirst();
-    
-    String chosen;
-    chosen << (result.isLocalFile() ? result.getLocalFile().getFullPathName()
-               : result.toString (false));
-    
-    brirMenu.setText ("Loading...");
-    
-    if (! mReverb.loadBRIR (File (chosen.removeCharacters("\n"))))
-        updateBrirLabel();
-}
-
 void ReverbControls::updateBypass() {
   bool enabled = bypassToggle.getToggleState();
   if ( enabled  ) {
@@ -124,17 +96,18 @@ void ReverbControls::updateBypass() {
   setAlpha( enabled + 0.4f );
 }
 
-void ReverbControls::updateBrirLabel() {
-    /*
-    auto brirIndex = mReverb.getBrirIndex();
-    if (brirIndex >= 0 && brirIndex < BundledBRIRs.size()) {
-        brirMenu.setSelectedItemIndex(brirIndex, dontSendNotification);
-    } else {
-        // Show filename if custom file is selected
-        auto brir = mReverb.getBrirPath().getFileNameWithoutExtension();
-        brirMenu.setText(brir, dontSendNotification);
-    }
-     */
+void ReverbControls::updateBrirLabel()
+{
+    String text;
+    
+    int brirIndex = mReverb.reverbBRIR.get();
+    
+    if (brirIndex < mReverb.reverbBRIR.getRange().getEnd() - 1)
+      text = mReverb.getBRIROptions()[brirIndex];
+    else
+      text = mReverb.getBRIRPath().getFileNameWithoutExtension();
+    
+    brirMenu.setText (text, dontSendNotification);
 }
 
 void ReverbControls::updateDistanceAttenuation() {
@@ -144,4 +117,9 @@ void ReverbControls::updateDistanceAttenuation() {
   } else {
     source->DisableDistanceAttenuationReverb();
   }
+}
+
+void ReverbControls::changeListenerCallback (ChangeBroadcaster *source)
+{
+    updateBrirLabel();
 }
