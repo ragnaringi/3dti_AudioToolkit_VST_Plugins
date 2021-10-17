@@ -24,51 +24,69 @@
 #include <JuceHeader.h>
 
 //==============================================================================
-class ReverbProcessor : private Timer
+class ReverbProcessor : private Thread // private AsyncUpdater, 
 {
 public:
     //==========================================================================
+    /***/
     ReverbProcessor (Binaural::CCore& core);
+    
+    /***/
     ~ReverbProcessor();
     
+    /***/
     void setup (double sampleRate, int samplesPerBlock);
     
     //==========================================================================
+    /***/
     void process (AudioBuffer<float>& buffer);
     
+    /***/
     void process (AudioBuffer<float>& quadIn, AudioBuffer<float>& stereoOut);
     
     //==========================================================================
-    bool loadBRIR (int bundledIndex);  // A number between 0-6 for bundled HRTFs
+    /***/
     bool loadBRIR (const File& file);
     
-    std::function<void()> didReloadBRIR;
+    /***/
+    // std::function<void()> didReloadBRIR;
     
-    int         getBrirIndex() const { return mBRIRIndex; }
-    const File& getBrirPath()  const { return mBRIRPath;  }
+    /***/
+    const File&     getBrirPath() const { return mBRIRPath;  }
     
-    float       getPower()     const { return mPower; };
+    /***/
+    float           getPower()     const { return mPower; };
     
     //==========================================================================
-    AudioParameterBool reverbEnabled;
+    /** Public parameters */
+    AudioParameterBool  reverbEnabled;
     AudioParameterFloat reverbLevel;               // ranges from -30 to +6 dB
     AudioParameterFloat reverbDistanceAttenuation; // ranges from -6 to 0 dB
+    AudioParameterInt   reverbBRIR;                // ranges from 0 to 6
+    
+    /** */
+    StringArray getBrirOptions() const
+    {
+        return {"Small", "Medium", "Large", "Library", "Trapezoid", "Load 3DTI", "Load SOFA"};
+    }
+    
+private:
+    //==========================================================================
+    /** Thread */
+    void run() override;
+    
+    bool doLoadBRIR (const File& file);
+    
+    double getSampleRate();
     
     std::atomic<bool> isLoading {false};
     
-private:
-    void timerCallback() override;
-    
-    bool __loadBRIR (const File& file);
-    
-    double getSampleRate();
     //==========================================================================
     Binaural::CCore& mCore;
     std::shared_ptr<Binaural::CEnvironment> mEnvironment;
     
     Array<File, CriticalSection> mBRIRsToLoad;
     
-    int  mBRIRIndex = 0;
     File mBRIRPath;
     
     float mPower;

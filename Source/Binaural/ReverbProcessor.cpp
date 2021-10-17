@@ -2,7 +2,7 @@
 * \class ReverbProcessor
 *
 * \brief Declaration of Toolkit3dtiProcessor interface.
-* \date  June 2019
+* \date  October 2021
 *
 * \authors Reactify Music LLP: R. Hrafnkelsson ||
 * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||
@@ -23,10 +23,13 @@
 #include "Utils.h"
 #include "ReverbProcessor.h"
 
+//==============================================================================
 ReverbProcessor::ReverbProcessor (Binaural::CCore& core)
-  :  reverbEnabled ("Reverb Enabled", "Reverb Enabled", true)
+  :  Thread ("ReverbProcessor")
+  ,  reverbEnabled ("Reverb Enabled", "Reverb Enabled", true)
   ,  reverbLevel ("Reverb Level", "Reverb Level", NormalisableRange<float> (-30.f, 6.f, 0.1f), -3.f)
   ,  reverbDistanceAttenuation ("Reverb Distance Attenuation", "Reverb Distance Attenuation", NormalisableRange<float> (-6.f, 0.f, 0.1f), -3.f)
+  ,  reverbBRIR ("Reverb BRIR", "Reverb BRIR", 0, 6, 0)
   ,  mCore (core)
 {
     // Environment setup
@@ -36,18 +39,16 @@ ReverbProcessor::ReverbProcessor (Binaural::CCore& core)
 
 ReverbProcessor::~ReverbProcessor()
 {
-    stopTimer();
+    stopThread (500);
 }
 
+//==============================================================================
 void ReverbProcessor::setup (double sampleRate, int samplesPerBlock)
 {
-    loadBRIR (0);
-    
-    JUCE_ASSERT_MESSAGE_MANAGER_EXISTS;
-    startTimerHz (2);
-    timerCallback();
+    loadBRIR (getBundledBRIR (reverbBRIR.get(), sampleRate));
 }
 
+//==============================================================================
 void ReverbProcessor::process (AudioBuffer<float>& buffer)
 {
     if (isLoading.load() || ! reverbEnabled.get())
@@ -55,6 +56,10 @@ void ReverbProcessor::process (AudioBuffer<float>& buffer)
         buffer.clear();
         return;
     }
+    
+    auto magnitudes = mCore.GetMagnitudes();
+    magnitudes.SetReverbDistanceAttenuation (reverbDistanceAttenuation);
+    mCore.SetMagnitudes (magnitudes);
     
     Common::CEarPair<CMonoBuffer<float>> outputBuffer;
     mEnvironment->ProcessVirtualAmbisonicReverb (outputBuffer.left,
@@ -72,9 +77,7 @@ void ReverbProcessor::process (AudioBuffer<float>& buffer)
     // for spatialised audio
     jassert (buffer.getNumChannels() >= 2);
     
-    int numSamples = buffer.getNumSamples();
-    
-    for (int i = 0; i < numSamples; i++)
+    for (int i = 0; i < buffer.getNumSamples(); i++)
     {
         buffer.getWritePointer(0)[i] = outputBuffer.left[i];
         buffer.getWritePointer(1)[i] = outputBuffer.right[i];
@@ -96,6 +99,10 @@ void ReverbProcessor::process (AudioBuffer<float>& quadIn, AudioBuffer<float>& s
     
     jassert (quadIn.getNumChannels() == 4);
     jassert (stereoOut.getNumChannels()  >= 2);
+    
+    auto magnitudes = mCore.GetMagnitudes();
+    magnitudes.SetReverbDistanceAttenuation (reverbDistanceAttenuation);
+    mCore.SetMagnitudes (magnitudes);
     
     int numSamples = stereoOut.getNumSamples();
     
@@ -121,6 +128,8 @@ void ReverbProcessor::process (AudioBuffer<float>& quadIn, AudioBuffer<float>& s
         
         numSamples = (int)outputBuffer.GetNsamples();
         
+        jassert (numSamples == stereoOut.getNumSamples());
+        
         for (int i = 0; i < numSamples; i++)
         {
             stereoOut.getWritePointer(0)[i] += outputBuffer.GetMonoChannel (0)[i];
@@ -134,35 +143,37 @@ void ReverbProcessor::process (AudioBuffer<float>& quadIn, AudioBuffer<float>& s
     mPower = stereoOut.getRMSLevel (0, 0, numSamples);
 }
 
-bool ReverbProcessor::loadBRIR (int bundledIndex)
+//==============================================================================
+void ReverbProcessor::run()
 {
-    if (bundledIndex < 0 || bundledIndex > BundledBRIRs.size()-1)
-        return false;
+    if (mBRIRsToLoad.size() > 0 && ! isLoading.load())
+    {
+        doLoadBRIR (mBRIRsToLoad.removeAndReturn (0));
+        
+        if (mBRIRsToLoad.isEmpty())
+            signalThreadShouldExit();
+    }
     
-    return loadBRIR (getBundledBRIR (bundledIndex, getSampleRate()));
+    sleep (100);
 }
 
+//==============================================================================
 bool ReverbProcessor::loadBRIR (const File& file)
 {
     if (file == mBRIRPath)
         return false;
     
-    return mBRIRsToLoad.addIfNotAlreadyThere (file);
+    mBRIRsToLoad.clearQuick();
+    
+    mBRIRsToLoad.add (file);
+
+    if (! isThreadRunning())
+        startThread();
+    
+    return true;
 }
 
-void ReverbProcessor::timerCallback()
-{
-    if (mBRIRsToLoad.size() > 0)
-    {
-        if (isLoading.load())
-            return;
-        
-        __loadBRIR (mBRIRsToLoad[0]);
-        mBRIRsToLoad.remove (0);
-    }
-}
-
-bool ReverbProcessor::__loadBRIR (const File& file)
+bool ReverbProcessor::doLoadBRIR (const File& file)
 {
     isLoading.store (true);
     
@@ -195,7 +206,6 @@ bool ReverbProcessor::__loadBRIR (const File& file)
     if (isSofa ? BRIR::CreateFromSofa (path, mEnvironment)
                : BRIR::CreateFrom3dti (path, mEnvironment))
     {
-        mBRIRIndex = brirPathToBundledIndex (file);
         mBRIRPath  = file;
         
         success = true;
@@ -203,12 +213,10 @@ bool ReverbProcessor::__loadBRIR (const File& file)
     
     isLoading.store (false);
     
-    if (didReloadBRIR != nullptr)
-        didReloadBRIR();
-    
     return success;
 }
 
+//==============================================================================
 double ReverbProcessor::getSampleRate()
 {
     return mCore.GetAudioState().sampleRate;

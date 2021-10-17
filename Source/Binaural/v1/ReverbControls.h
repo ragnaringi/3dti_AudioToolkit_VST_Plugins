@@ -71,11 +71,11 @@ public:
   void brirMenuChanged() {
     auto text = brirMenu.getText();
     if ( text == "Load 3DTI" ) {
-      loadCustomBRIR("*.3dti-brir");
+      loadCustomBRIR ("*.3dti-brir");
     } else if ( text == "Load SOFA" ) {
-      loadCustomBRIR("*.sofa");
+      loadCustomBRIR ("*.sofa");
     } else {
-      mReverb.loadBRIR(brirMenu.getSelectedItemIndex());
+      mReverb.loadBRIR (getBundledBRIR (brirMenu.getSelectedItemIndex(), mProcessor.getSampleRate()));
     }
   }
   

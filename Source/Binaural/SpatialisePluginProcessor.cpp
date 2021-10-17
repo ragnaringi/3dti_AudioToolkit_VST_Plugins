@@ -264,7 +264,7 @@ void Toolkit3dtiPluginAudioProcessor::processBlock (AudioBuffer<float>& buffer, 
       // Main process
       mSpatializer.processBlock (monoIn, scratchBuffer);
 
-#ifndef DEBUG // NOTE(Ragnar): Reverb processing is too heavy for debug mode
+// #ifndef DEBUG // NOTE(Ragnar): Reverb processing is too heavy for debug mode
       bool reverbEnabled = getSources().front()->IsReverbProcessEnabled();
       
       if ( reverbEnabled || mReverb.getPower() > 0.f )
@@ -276,7 +276,7 @@ void Toolkit3dtiPluginAudioProcessor::processBlock (AudioBuffer<float>& buffer, 
         for (int ch = 0; ch < numChannels; ch++)
           scratchBuffer.addFrom (ch, 0, reverbBuffer, ch, 0, blockSizeInternal);
       }
-#endif
+// #endif
       outFifo.addToFifo(scratchBuffer);
     }
   }
@@ -340,7 +340,7 @@ void Toolkit3dtiPluginAudioProcessor::updateHostParameters() {
     {"Enable Anechoic", getCore().getSources().front()->IsAnechoicProcessEnabled()},
     {"Enable Reverb", getCore().getSources().front()->IsReverbProcessEnabled()},
     {"HRFT", getCore().getHrtfIndex() },
-    {"BRIR", getReverbProcessor().getBrirIndex() },
+    // {"BRIR", getReverbProcessor().getBrirIndex() },
   };
 
   for (auto const & parameter : parameters) {
@@ -414,7 +414,7 @@ void Toolkit3dtiPluginAudioProcessor::parameterChanged(const String& parameterID
   } else if ( parameterID == "HRTF" ) {
       getCore().loadHRTF((int)newValue);
   } else if ( parameterID == "BRIR" ) {
-      getReverbProcessor().loadBRIR((int)newValue);
+      // getReverbProcessor().loadBRIR((int)newValue);
   }
 
   getCore().setSourcePosition(getCore().getSources().front(), position);

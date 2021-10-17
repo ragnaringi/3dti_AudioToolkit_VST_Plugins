@@ -65,10 +65,12 @@ ReverbControls::ReverbControls(Toolkit3dtiPluginAudioProcessor& p)
   addAndMakeVisible( bypassToggle );
   
   updateGui();
-    
+  
+    /*
   mReverb.didReloadBRIR = [this] {
     updateBrirLabel();
   };
+     */
 }
 
 void ReverbControls::updateGui() {
@@ -123,6 +125,7 @@ void ReverbControls::updateBypass() {
 }
 
 void ReverbControls::updateBrirLabel() {
+    /*
     auto brirIndex = mReverb.getBrirIndex();
     if (brirIndex >= 0 && brirIndex < BundledBRIRs.size()) {
         brirMenu.setSelectedItemIndex(brirIndex, dontSendNotification);
@@ -131,6 +134,7 @@ void ReverbControls::updateBrirLabel() {
         auto brir = mReverb.getBrirPath().getFileNameWithoutExtension();
         brirMenu.setText(brir, dontSendNotification);
     }
+     */
 }
 
 void ReverbControls::updateDistanceAttenuation() {
