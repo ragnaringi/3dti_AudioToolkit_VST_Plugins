@@ -267,7 +267,7 @@ void Toolkit3dtiPluginAudioProcessor::processBlock (AudioBuffer<float>& buffer, 
 // #ifndef DEBUG // NOTE(Ragnar): Reverb processing is too heavy for debug mode
       bool reverbEnabled = getSources().front()->IsReverbProcessEnabled();
       
-      if ( reverbEnabled || mReverb.getPower() > 0.f )
+      if (reverbEnabled)
       {
         AudioBuffer<float> reverbBuffer (scratchBuffer);
         
@@ -340,7 +340,7 @@ void Toolkit3dtiPluginAudioProcessor::updateHostParameters() {
     {"Enable Anechoic", getCore().getSources().front()->IsAnechoicProcessEnabled()},
     {"Enable Reverb", getCore().getSources().front()->IsReverbProcessEnabled()},
     {"HRFT", getCore().getHrtfIndex() },
-    // {"BRIR", getReverbProcessor().getBrirIndex() },
+    {"BRIR", getReverbProcessor().reverbBRIR.get() },
   };
 
   for (auto const & parameter : parameters) {
