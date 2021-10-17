@@ -24,7 +24,10 @@
 #include <JuceHeader.h>
 
 //==============================================================================
-class ReverbProcessor : private Thread, private AsyncUpdater, private AudioProcessorParameter::Listener
+class ReverbProcessor  : public  ChangeBroadcaster,
+                         private Thread,
+                         private AsyncUpdater,
+                         private AudioProcessorParameter::Listener
 {
 public:
     //==========================================================================

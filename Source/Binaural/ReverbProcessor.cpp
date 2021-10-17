@@ -286,6 +286,8 @@ void ReverbProcessor::resetBRIRIndex()
         reverbBRIR = selectedIndex;
     else
         reverbBRIR = reverbBRIR.getRange().getEnd() - 1;
+    
+    sendChangeMessage();
 }
 
 //==============================================================================
