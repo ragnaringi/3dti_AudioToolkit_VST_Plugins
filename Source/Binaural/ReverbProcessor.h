@@ -2,7 +2,7 @@
 * \class ReverbProcessor
 *
 * \brief Declaration of Toolkit3dtiProcessor interface.
-* \date  June 2019
+* \date  October 2021
 *
 * \authors Reactify Music LLP: R. Hrafnkelsson ||
 * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||
@@ -24,17 +24,17 @@
 #include <JuceHeader.h>
 
 //==============================================================================
-class ReverbProcessor : private Thread // private AsyncUpdater, 
+class ReverbProcessor : private Thread, private AsyncUpdater, private AudioProcessorParameter::Listener
 {
 public:
     //==========================================================================
-    /***/
+    /** Constructor */
     ReverbProcessor (Binaural::CCore& core);
     
-    /***/
+    /** Destructor */
     ~ReverbProcessor();
     
-    /***/
+    /** Initialise internals. Will load the first of bundled BRIRs. */
     void setup (double sampleRate, int samplesPerBlock);
     
     //==========================================================================
@@ -45,14 +45,14 @@ public:
     void process (AudioBuffer<float>& quadIn, AudioBuffer<float>& stereoOut);
     
     //==========================================================================
-    /***/
+    /** Attempts to load a BRIR file.
+        
+        @see reverbBRIR
+     */
     bool loadBRIR (const File& file);
     
-    /***/
-    // std::function<void()> didReloadBRIR;
-    
-    /***/
-    const File&     getBrirPath() const { return mBRIRPath;  }
+    /** @returns the file path of the currently loaded BRIR */
+    const File&     getBRIRPath() const { return mBRIRPath;  }
     
     /***/
     float           getPower()     const { return mPower; };
@@ -62,32 +62,44 @@ public:
     AudioParameterBool  reverbEnabled;
     AudioParameterFloat reverbLevel;               // ranges from -30 to +6 dB
     AudioParameterFloat reverbDistanceAttenuation; // ranges from -6 to 0 dB
-    AudioParameterInt   reverbBRIR;                // ranges from 0 to 6
     
-    /** */
-    StringArray getBrirOptions() const
-    {
-        return {"Small", "Medium", "Large", "Library", "Trapezoid", "Load 3DTI", "Load SOFA"};
-    }
+    /** The index of the currently selected BRIR. Setting this will trigger a BRIR reload.
+        
+        Ranges from 0 to bundled BRIRs + 1, with max value launching a FileChooser process.
+     */
+    AudioParameterInt   reverbBRIR;
+    
+    /** @returns the names of bundled BRIRs with "Load File ..." at the end of the array */
+    static StringArray getBRIROptions();
     
 private:
     //==========================================================================
     /** Thread */
     void run() override;
     
+    /** AsyncUpdater */
+    void handleAsyncUpdate() override;
+    
+    /** AudioProcessorParameter::Listener */
+    void parameterValueChanged (int parameterIndex, float newValue) override;
+    void parameterGestureChanged (int parameterIndex, bool gestureIsStarting) override;
+    
+    //==========================================================================
     bool doLoadBRIR (const File& file);
+    
+    void resetBRIRIndex();
     
     double getSampleRate();
     
+    //==========================================================================
     std::atomic<bool> isLoading {false};
     
-    //==========================================================================
     Binaural::CCore& mCore;
     std::shared_ptr<Binaural::CEnvironment> mEnvironment;
     
-    Array<File, CriticalSection> mBRIRsToLoad;
-    
     File mBRIRPath;
+    Array<File, CriticalSection> mBRIRsToLoad;
+    std::unique_ptr<FileChooser> fc;
     
     float mPower;
 };

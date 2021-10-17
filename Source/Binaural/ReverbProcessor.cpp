@@ -29,16 +29,20 @@ ReverbProcessor::ReverbProcessor (Binaural::CCore& core)
   ,  reverbEnabled ("Reverb Enabled", "Reverb Enabled", true)
   ,  reverbLevel ("Reverb Level", "Reverb Level", NormalisableRange<float> (-30.f, 6.f, 0.1f), -3.f)
   ,  reverbDistanceAttenuation ("Reverb Distance Attenuation", "Reverb Distance Attenuation", NormalisableRange<float> (-6.f, 0.f, 0.1f), -3.f)
-  ,  reverbBRIR ("Reverb BRIR", "Reverb BRIR", 0, 6, 0)
+  ,  reverbBRIR ("Reverb BRIR", "Reverb BRIR", 0, BundledBRIRs.size() + 1, 0)
   ,  mCore (core)
 {
     // Environment setup
     mEnvironment = core.CreateEnvironment();
     mEnvironment->SetReverberationOrder (TReverberationOrder::BIDIMENSIONAL);
+    
+    reverbBRIR.addListener (this);
 }
 
 ReverbProcessor::~ReverbProcessor()
 {
+    reverbBRIR.removeListener (this);
+    
     stopThread (500);
 }
 
@@ -144,6 +148,26 @@ void ReverbProcessor::process (AudioBuffer<float>& quadIn, AudioBuffer<float>& s
 }
 
 //==============================================================================
+bool ReverbProcessor::loadBRIR (const File& file)
+{
+    if (file == mBRIRPath)
+        return false;
+    
+    mBRIRsToLoad.clearQuick();
+    mBRIRsToLoad.add (file);
+
+    startThread();
+    
+    return true;
+}
+
+//==============================================================================
+StringArray ReverbProcessor::getBRIROptions()
+{
+    return {"Small", "Medium", "Large", "Library", "Trapezoid", "Load File ..."};
+}
+
+//==============================================================================
 void ReverbProcessor::run()
 {
     if (mBRIRsToLoad.size() > 0 && ! isLoading.load())
@@ -158,21 +182,49 @@ void ReverbProcessor::run()
 }
 
 //==============================================================================
-bool ReverbProcessor::loadBRIR (const File& file)
+void ReverbProcessor::handleAsyncUpdate()
 {
-    if (file == mBRIRPath)
-        return false;
+    fc.reset (new FileChooser ("Choose a file to open...",
+                               BRIRDirectory(),
+                               "*.sofa;*.3dti-brir",
+                               true));
+  
+    fc->showDialog (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, nullptr);
     
-    mBRIRsToLoad.clearQuick();
+    auto results = fc->getURLResults();
     
-    mBRIRsToLoad.add (file);
-
-    if (! isThreadRunning())
-        startThread();
+    if (results.isEmpty())
+    {
+        resetBRIRIndex();
+        
+        return;
+    }
     
-    return true;
+    loadBRIR (results.getFirst().getLocalFile());
 }
 
+//==============================================================================
+void ReverbProcessor::parameterValueChanged (int parameterIndex, float newValue)
+{
+    int index = roundToInt (reverbBRIR.convertFrom0to1 (newValue));
+    
+    if (index == reverbBRIR.getRange().getEnd() - 1)
+    {
+        // The last parameter value is reserved for custom BRIRs. In this case
+        // we trigger and async update to launch the FileChooser menu
+        triggerAsyncUpdate();
+    }
+    else
+    {
+        loadBRIR (getBundledBRIR (index, getSampleRate()));
+    }
+}
+
+void ReverbProcessor::parameterGestureChanged (int parameterIndex, bool gestureIsStarting)
+{
+}
+
+//==============================================================================
 bool ReverbProcessor::doLoadBRIR (const File& file)
 {
     isLoading.store (true);
@@ -182,19 +234,26 @@ bool ReverbProcessor::doLoadBRIR (const File& file)
     if (! file.existsAsFile())
     {
         DBG ("BRIR file doesn't exist");
+            
+        resetBRIRIndex();
+        
         isLoading.store (false);
+        
         return false;
     }
     
     int fileSampleRate = checkResourceSampleRate (file, false);
-    // TODO: Throw exception / return error and trigger warning from editor
+    
     if (fileSampleRate != getSampleRate())
     {
         AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon,
                                           "Wrong sample rate",
                                           "Please select a file that matches the project sample rate",
                                           "OK");
+        resetBRIRIndex();
+        
         isLoading.store (false);
+       
         return false;
     }
     
@@ -206,7 +265,9 @@ bool ReverbProcessor::doLoadBRIR (const File& file)
     if (isSofa ? BRIR::CreateFromSofa (path, mEnvironment)
                : BRIR::CreateFrom3dti (path, mEnvironment))
     {
-        mBRIRPath  = file;
+        mBRIRPath = file;
+        
+        resetBRIRIndex();
         
         success = true;
     }
@@ -214,6 +275,17 @@ bool ReverbProcessor::doLoadBRIR (const File& file)
     isLoading.store (false);
     
     return success;
+}
+
+//==============================================================================
+void ReverbProcessor::resetBRIRIndex()
+{
+    int selectedIndex = brirPathToBundledIndex (getBRIRPath());
+    
+    if (selectedIndex >= 0)
+        reverbBRIR = selectedIndex;
+    else
+        reverbBRIR = reverbBRIR.getRange().getEnd() - 1;
 }
 
 //==============================================================================
