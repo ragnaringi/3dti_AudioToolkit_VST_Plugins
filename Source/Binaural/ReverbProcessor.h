@@ -108,4 +108,6 @@ private:
     std::unique_ptr<FileChooser> fc;
     
     float mPower;
+    
+    JUCE_DECLARE_WEAK_REFERENCEABLE (ReverbProcessor)
 };

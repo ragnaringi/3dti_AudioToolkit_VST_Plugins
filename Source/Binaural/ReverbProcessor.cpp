@@ -29,8 +29,8 @@ ReverbProcessor::ReverbProcessor (Binaural::CCore& core)
   ,  reverbEnabled ("Reverb Enabled", "Reverb Enabled", true)
   ,  reverbLevel ("Reverb Level", "Reverb Level", NormalisableRange<float> (-30.f, 6.f, 0.1f), -3.f)
   ,  reverbDistanceAttenuation ("Reverb Distance Attenuation", "Reverb Distance Attenuation", NormalisableRange<float> (-6.f, 0.f, 0.1f), -3.f)
-  ,  reverbBRIR ("Reverb BRIR", "Reverb BRIR", 0, BundledBRIRs.size() + 1, 0)
   ,  reverbOrder ("Reverb Order", "Reverb Order", 0, 2, 1)
+  ,  reverbBRIR ("Reverb BRIR", "Reverb BRIR", 0, BundledBRIRs.size() + 1, 0)
   ,  mCore (core)
 {
     // Environment setup
@@ -182,18 +182,24 @@ void ReverbProcessor::handleAsyncUpdate()
                                "*.sofa;*.3dti-brir",
                                true));
   
-    fc->showDialog (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, nullptr);
+    const WeakReference<ReverbProcessor> safePointer (this);
     
-    auto results = fc->getURLResults();
-    
-    if (results.isEmpty())
+    fc->launchAsync (FileBrowserComponent::openMode, [this, safePointer] (const FileChooser& f)
     {
-        resetBRIRIndex();
+        if (safePointer.wasObjectDeleted())
+            return;
         
-        return;
-    }
-    
-    loadBRIR (results.getFirst().getLocalFile());
+        auto results = f.getURLResults();
+        
+        if (results.isEmpty())
+        {
+            resetBRIRIndex();
+            
+            return;
+        }
+        
+        loadBRIR (results.getFirst().getLocalFile());
+    });
 }
 
 //==============================================================================
