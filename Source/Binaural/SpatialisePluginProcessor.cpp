@@ -2,7 +2,7 @@
 * \class Toolkit3dtiPluginAudioProcessor
 *
 * \brief Declaration of Toolkit3dtiPluginAudioProcessor interface.
-* \date  June 2019
+* \date  October 2021
 *
 * \authors Reactify Music LLP: R. Hrafnkelsson ||
 * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||
@@ -112,7 +112,7 @@ Toolkit3dtiPluginAudioProcessor::Toolkit3dtiPluginAudioProcessor()
   treeState.createAndAddParameter (std::make_unique<Parameter> ("BRIR", "BRIR", "", NormalisableRange<float>(0, getReverbProcessor().reverbBRIR.getRange().getEnd() - 1), 0, [](float value) { return String (value, 0); }, nullptr));
   treeState.addParameterListener ("BRIR", this);
 
-  treeState.state = ValueTree ("3D Tune-In Parameters");
+  treeState.state = ValueTree ("3DTI Spatialisation Parameters");
     
 #if DEBUG
   ERRORHANDLER3DTI.SetVerbosityMode (VERBOSITYMODE_ERRORSANDWARNINGS);
