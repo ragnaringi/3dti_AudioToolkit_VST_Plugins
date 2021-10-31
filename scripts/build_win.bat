@@ -1,5 +1,5 @@
 
-..\libs\JUCE\extras\Projucer\Builds\VisualStudio2019\x64\Release\App\Projucer.exe --resave ..\3dti_AudioToolkit_Plugin.jucer
+..\libs\JUCE\extras\Projucer\Builds\VisualStudio2019\x64\Release\App\Projucer.exe --resave ..\3dti_Spatialisation.jucer
 ..\libs\JUCE\extras\Projucer\Builds\VisualStudio2019\x64\Release\App\Projucer.exe --resave ..\3dti_Anechoic\3dti_Anechoic.jucer
 ..\libs\JUCE\extras\Projucer\Builds\VisualStudio2019\x64\Release\App\Projucer.exe --resave ..\3dti_Hearing_Aid_Simulator\3dti_Hearing_Aid_Simulator.jucer
 ..\libs\JUCE\extras\Projucer\Builds\VisualStudio2019\x64\Release\App\Projucer.exe --resave ..\3dti_Hearing_Loss_Simulator\3dti_Hearing_Loss_Simulator.jucer
