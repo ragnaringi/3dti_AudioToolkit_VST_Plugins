@@ -653,22 +653,48 @@
 														<dict>
 															<key>BUNDLE_CAN_DOWNGRADE</key>
 															<false/>
-															<key>BUNDLE_POSTINSTALL_PATH</key>
-															<dict>
-																<key>PATH_TYPE</key>
-																<integer>0</integer>
-															</dict>
-															<key>BUNDLE_PREINSTALL_PATH</key>
-															<dict>
-																<key>PATH_TYPE</key>
-																<integer>0</integer>
-															</dict>
 															<key>CHILDREN</key>
 															<array/>
 															<key>GID</key>
 															<integer>0</integer>
 															<key>PATH</key>
-															<string>../Builds/MacOS/3dti_Anechoic.vst</string>
+															<string>../Builds/MacOS/3DTI_3DReverb.component</string>
+															<key>PATH_TYPE</key>
+															<integer>1</integer>
+															<key>PERMISSIONS</key>
+															<integer>493</integer>
+															<key>TYPE</key>
+															<integer>3</integer>
+															<key>UID</key>
+															<integer>0</integer>
+														</dict>
+														<dict>
+															<key>BUNDLE_CAN_DOWNGRADE</key>
+															<false/>
+															<key>CHILDREN</key>
+															<array/>
+															<key>GID</key>
+															<integer>0</integer>
+															<key>PATH</key>
+															<string>../Builds/MacOS/3DTI_AnechoicSpat.component</string>
+															<key>PATH_TYPE</key>
+															<integer>1</integer>
+															<key>PERMISSIONS</key>
+															<integer>493</integer>
+															<key>TYPE</key>
+															<integer>3</integer>
+															<key>UID</key>
+															<integer>0</integer>
+														</dict>
+														<dict>
+															<key>BUNDLE_CAN_DOWNGRADE</key>
+															<false/>
+															<key>CHILDREN</key>
+															<array/>
+															<key>GID</key>
+															<integer>0</integer>
+															<key>PATH</key>
+															<string>../Builds/MacOS/3DTI_Hearing_Aid_Simulator.component</string>
 															<key>PATH_TYPE</key>
 															<integer>1</integer>
 															<key>PERMISSIONS</key>
@@ -696,7 +722,7 @@
 															<key>GID</key>
 															<integer>0</integer>
 															<key>PATH</key>
-															<string>../Builds/MacOS/3dti_Hearing_Aid_Simulator.vst</string>
+															<string>../Builds/MacOS/3DTI_Hearing_Loss_Simulator.component</string>
 															<key>PATH_TYPE</key>
 															<integer>1</integer>
 															<key>PERMISSIONS</key>
@@ -709,22 +735,47 @@
 														<dict>
 															<key>BUNDLE_CAN_DOWNGRADE</key>
 															<false/>
-															<key>BUNDLE_POSTINSTALL_PATH</key>
-															<dict>
-																<key>PATH_TYPE</key>
-																<integer>0</integer>
-															</dict>
-															<key>BUNDLE_PREINSTALL_PATH</key>
-															<dict>
-																<key>PATH_TYPE</key>
-																<integer>0</integer>
-															</dict>
 															<key>CHILDREN</key>
 															<array/>
 															<key>GID</key>
 															<integer>0</integer>
 															<key>PATH</key>
-															<string>../Builds/MacOS/3dti_Hearing_Loss_Simulator.vst</string>
+															<string>../Builds/MacOS/3DTI_Spatialisation.component</string>
+															<key>PATH_TYPE</key>
+															<integer>1</integer>
+															<key>PERMISSIONS</key>
+															<integer>493</integer>
+															<key>TYPE</key>
+															<integer>3</integer>
+															<key>UID</key>
+															<integer>0</integer>
+														</dict>
+													</array>
+													<key>GID</key>
+													<integer>0</integer>
+													<key>PATH</key>
+													<string>Components</string>
+													<key>PATH_TYPE</key>
+													<integer>2</integer>
+													<key>PERMISSIONS</key>
+													<integer>509</integer>
+													<key>TYPE</key>
+													<integer>2</integer>
+													<key>UID</key>
+													<integer>0</integer>
+												</dict>
+												<dict>
+													<key>CHILDREN</key>
+													<array>
+														<dict>
+															<key>BUNDLE_CAN_DOWNGRADE</key>
+															<false/>
+															<key>CHILDREN</key>
+															<array/>
+															<key>GID</key>
+															<integer>0</integer>
+															<key>PATH</key>
+															<string>../Builds/MacOS/3DTI_3DReverb.vst</string>
 															<key>PATH_TYPE</key>
 															<integer>1</integer>
 															<key>PERMISSIONS</key>
@@ -737,22 +788,12 @@
 														<dict>
 															<key>BUNDLE_CAN_DOWNGRADE</key>
 															<false/>
-															<key>BUNDLE_POSTINSTALL_PATH</key>
-															<dict>
-																<key>PATH_TYPE</key>
-																<integer>0</integer>
-															</dict>
-															<key>BUNDLE_PREINSTALL_PATH</key>
-															<dict>
-																<key>PATH_TYPE</key>
-																<integer>0</integer>
-															</dict>
 															<key>CHILDREN</key>
 															<array/>
 															<key>GID</key>
 															<integer>0</integer>
 															<key>PATH</key>
-															<string>../Builds/MacOS/3dti_Reverb.vst</string>
+															<string>../Builds/MacOS/3DTI_AnechoicSpat.vst</string>
 															<key>PATH_TYPE</key>
 															<integer>1</integer>
 															<key>PERMISSIONS</key>
@@ -765,22 +806,48 @@
 														<dict>
 															<key>BUNDLE_CAN_DOWNGRADE</key>
 															<false/>
-															<key>BUNDLE_POSTINSTALL_PATH</key>
-															<dict>
-																<key>PATH_TYPE</key>
-																<integer>0</integer>
-															</dict>
-															<key>BUNDLE_PREINSTALL_PATH</key>
-															<dict>
-																<key>PATH_TYPE</key>
-																<integer>0</integer>
-															</dict>
 															<key>CHILDREN</key>
 															<array/>
 															<key>GID</key>
 															<integer>0</integer>
 															<key>PATH</key>
-															<string>../Builds/MacOS/3dti_Spatialisation.vst</string>
+															<string>../Builds/MacOS/3DTI_Hearing_Aid_Simulator.vst</string>
+															<key>PATH_TYPE</key>
+															<integer>1</integer>
+															<key>PERMISSIONS</key>
+															<integer>493</integer>
+															<key>TYPE</key>
+															<integer>3</integer>
+															<key>UID</key>
+															<integer>0</integer>
+														</dict>
+														<dict>
+															<key>BUNDLE_CAN_DOWNGRADE</key>
+															<false/>
+															<key>CHILDREN</key>
+															<array/>
+															<key>GID</key>
+															<integer>0</integer>
+															<key>PATH</key>
+															<string>../Builds/MacOS/3DTI_Hearing_Loss_Simulator.vst</string>
+															<key>PATH_TYPE</key>
+															<integer>1</integer>
+															<key>PERMISSIONS</key>
+															<integer>493</integer>
+															<key>TYPE</key>
+															<integer>3</integer>
+															<key>UID</key>
+															<integer>0</integer>
+														</dict>
+														<dict>
+															<key>BUNDLE_CAN_DOWNGRADE</key>
+															<false/>
+															<key>CHILDREN</key>
+															<array/>
+															<key>GID</key>
+															<integer>0</integer>
+															<key>PATH</key>
+															<string>../Builds/MacOS/3DTI_Spatialisation.vst</string>
 															<key>PATH_TYPE</key>
 															<integer>1</integer>
 															<key>PERMISSIONS</key>
@@ -795,6 +862,113 @@
 													<integer>0</integer>
 													<key>PATH</key>
 													<string>VST</string>
+													<key>PATH_TYPE</key>
+													<integer>2</integer>
+													<key>PERMISSIONS</key>
+													<integer>509</integer>
+													<key>TYPE</key>
+													<integer>2</integer>
+													<key>UID</key>
+													<integer>0</integer>
+												</dict>
+												<dict>
+													<key>CHILDREN</key>
+													<array>
+														<dict>
+															<key>BUNDLE_CAN_DOWNGRADE</key>
+															<false/>
+															<key>CHILDREN</key>
+															<array/>
+															<key>GID</key>
+															<integer>0</integer>
+															<key>PATH</key>
+															<string>../Builds/MacOS/3DTI_3DReverb.vst3</string>
+															<key>PATH_TYPE</key>
+															<integer>1</integer>
+															<key>PERMISSIONS</key>
+															<integer>493</integer>
+															<key>TYPE</key>
+															<integer>3</integer>
+															<key>UID</key>
+															<integer>0</integer>
+														</dict>
+														<dict>
+															<key>BUNDLE_CAN_DOWNGRADE</key>
+															<false/>
+															<key>CHILDREN</key>
+															<array/>
+															<key>GID</key>
+															<integer>0</integer>
+															<key>PATH</key>
+															<string>../Builds/MacOS/3DTI_AnechoicSpat.vst3</string>
+															<key>PATH_TYPE</key>
+															<integer>1</integer>
+															<key>PERMISSIONS</key>
+															<integer>493</integer>
+															<key>TYPE</key>
+															<integer>3</integer>
+															<key>UID</key>
+															<integer>0</integer>
+														</dict>
+														<dict>
+															<key>BUNDLE_CAN_DOWNGRADE</key>
+															<false/>
+															<key>CHILDREN</key>
+															<array/>
+															<key>GID</key>
+															<integer>0</integer>
+															<key>PATH</key>
+															<string>../Builds/MacOS/3DTI_Hearing_Aid_Simulator.vst3</string>
+															<key>PATH_TYPE</key>
+															<integer>1</integer>
+															<key>PERMISSIONS</key>
+															<integer>493</integer>
+															<key>TYPE</key>
+															<integer>3</integer>
+															<key>UID</key>
+															<integer>0</integer>
+														</dict>
+														<dict>
+															<key>BUNDLE_CAN_DOWNGRADE</key>
+															<false/>
+															<key>CHILDREN</key>
+															<array/>
+															<key>GID</key>
+															<integer>0</integer>
+															<key>PATH</key>
+															<string>../Builds/MacOS/3DTI_Hearing_Loss_Simulator.vst3</string>
+															<key>PATH_TYPE</key>
+															<integer>1</integer>
+															<key>PERMISSIONS</key>
+															<integer>493</integer>
+															<key>TYPE</key>
+															<integer>3</integer>
+															<key>UID</key>
+															<integer>0</integer>
+														</dict>
+														<dict>
+															<key>BUNDLE_CAN_DOWNGRADE</key>
+															<false/>
+															<key>CHILDREN</key>
+															<array/>
+															<key>GID</key>
+															<integer>0</integer>
+															<key>PATH</key>
+															<string>../Builds/MacOS/3DTI_Spatialisation.vst3</string>
+															<key>PATH_TYPE</key>
+															<integer>1</integer>
+															<key>PERMISSIONS</key>
+															<integer>493</integer>
+															<key>TYPE</key>
+															<integer>3</integer>
+															<key>UID</key>
+															<integer>0</integer>
+														</dict>
+													</array>
+													<key>GID</key>
+													<integer>0</integer>
+													<key>PATH</key>
+													<string>VST3</string>
 													<key>PATH_TYPE</key>
 													<integer>2</integer>
 													<key>PERMISSIONS</key>
