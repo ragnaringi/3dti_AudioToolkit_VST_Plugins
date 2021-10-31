@@ -442,7 +442,7 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" extraLinkerFlags="../../../libs/3dti_AudioToolkit/3dti_ResourceManager/third_party_libraries/sofacoustics/libsofa/dependencies/lib/macos/libcurl.a&#10;../../../libs/3dti_AudioToolkit/3dti_ResourceManager/third_party_libraries/sofacoustics/libsofa/dependencies/lib/macos/libhdf5_hl.a&#10;../../../libs/3dti_AudioToolkit/3dti_ResourceManager/third_party_libraries/sofacoustics/libsofa/dependencies/lib/macos/libhdf5.a&#10;../../../libs/3dti_AudioToolkit/3dti_ResourceManager/third_party_libraries/sofacoustics/libsofa/dependencies/lib/macos/libnetcdf.a&#10;../../../libs/3dti_AudioToolkit/3dti_ResourceManager/third_party_libraries/sofacoustics/libsofa/dependencies/lib/macos/libz.a&#10;"
                vstLegacyFolder="~/SDKs/VST_SDK/VST2_SDK" microphonePermissionNeeded="0"
-               xcodeValidArchs="i386,x86_64" NoDebug="-DNDEBUG -O3">
+               xcodeValidArchs="x86_64" NoDebug="-DNDEBUG -O3">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" libraryPath="../../../libs/3dti_AudioToolkit/3dti_ResourceManager/third_party_libraries/sofacoustics/libsofa/dependencies/lib/macos"
                        targetName="3DTI_3DReverb"/>
