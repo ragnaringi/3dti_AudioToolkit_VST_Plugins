@@ -1,8 +1,5 @@
 #!/bin/bash
 
-echo "Building Projucer"
-xcodebuild -project "../libs/JUCE/extras/Projucer/Builds/MacOSX/Projucer.xcodeproj" -scheme "Projucer - App" -configuration Release -sdk macosx -jobs 8
-
 echo "Deleting build products"
 rm -rf ../JuceLibraryCode
 rm -rf ../Builds/MacOSX/build/Release
