@@ -56,7 +56,7 @@ ReverbControls::ReverbControls (ReverbProcessor& p)
     
     bypassToggle.setButtonText ("On/Off");
     bypassToggle.setToggleState (true, dontSendNotification);
-    bypassToggle.onClick = [this] { updateBypass(); };
+    bypassToggle.onClick = [this] { mReverb.reverbEnabled = bypassToggle.getToggleState(); };
     addAndMakeVisible (bypassToggle);
     
     mReverb.addChangeListener (this);
@@ -98,12 +98,15 @@ void ReverbControls::resized()
 //==============================================================================
 void ReverbControls::updateGui()
 {
+    updateBypass();
     gainSlider.setValue (mReverb.reverbLevel.get(), dontSendNotification);
     distanceAttenuationSlider.setValue (mReverb.reverbDistanceAttenuation, dontSendNotification);
 }
 
 void ReverbControls::updateBypass()
 {
+    bypassToggle.setToggleState (mReverb.reverbEnabled.get(), dontSendNotification);
+    
     bool enabled = bypassToggle.getToggleState();
     setAlpha (enabled + 0.4f);
 }
