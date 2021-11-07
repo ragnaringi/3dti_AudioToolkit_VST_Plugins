@@ -2,7 +2,7 @@
  * \class ReverbControls
  *
  * \brief Declaration of ReverbControls interface.
- * \date  October 2021
+ * \date  November 2021
  *
  * \authors Reactify Music LLP: R. Hrafnkelsson ||
  * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||
@@ -23,8 +23,7 @@
 //==============================================================================
 ReverbControls::ReverbControls (ReverbProcessor& p)
   : mReverb (p),
-    gainLabel("Level Label", "Level [dB]"),
-    distanceAttenuationLabel("Distance Label", "dB attenuation per double distance")
+    gainLabel("Level Label", "Level [dB]")
 {
     brirMenu.addItemList (mReverb.getBRIROptions(), 1);
     brirMenu.onChange = [this] { brirMenuChanged(); };
@@ -40,19 +39,6 @@ ReverbControls::ReverbControls (ReverbProcessor& p)
     gainSlider.setTextBoxStyle (Slider::TextBoxRight, false, 65, 24);
     gainSlider.addListener (this);
     addAndMakeVisible (gainSlider);
-    
-    distanceAttenuationToggle.setButtonText ("On/Off");
-    distanceAttenuationToggle.setToggleState (true, dontSendNotification);
-    distanceAttenuationToggle.onClick = [this] { updateDistanceAttenuation(); };
-    
-    setLabelStyle (distanceAttenuationLabel);
-    distanceAttenuationLabel.setJustificationType( Justification::left );
-    
-    mapParameterToSlider( distanceAttenuationSlider, mReverb.reverbDistanceAttenuation );
-    distanceAttenuationSlider.setTextValueSuffix(" dB");
-    distanceAttenuationSlider.setTextBoxStyle( Slider::TextBoxRight, false, 65, 24 );
-    distanceAttenuationSlider.addListener( this );
-    addAndMakeVisible( distanceAttenuationSlider );
     
     bypassToggle.setButtonText ("On/Off");
     bypassToggle.setToggleState (true, dontSendNotification);
@@ -90,9 +76,6 @@ void ReverbControls::resized()
     brirMenu.setBounds (12, 40, area.getWidth()-24, 22);
     gainLabel.setBounds (10, brirMenu.getBottom() + 16, area.getWidth()-20, 24);
     gainSlider.setBounds (6, gainLabel.getBottom(), area.getWidth()-18, 24);
-    distanceAttenuationToggle.setBounds (10, gainSlider.getBottom() +2, 80, 24);
-    distanceAttenuationLabel.setBounds (93, distanceAttenuationToggle.getY(), area.getWidth()-100, 24);
-    distanceAttenuationSlider.setBounds (6, distanceAttenuationToggle.getBottom() + 4, area.getWidth()-18, 24);
 }
 
 //==============================================================================
@@ -100,7 +83,6 @@ void ReverbControls::updateGui()
 {
     updateBypass();
     gainSlider.setValue (mReverb.reverbLevel.get(), dontSendNotification);
-    distanceAttenuationSlider.setValue (mReverb.reverbDistanceAttenuation, dontSendNotification);
 }
 
 void ReverbControls::updateBypass()
@@ -124,8 +106,6 @@ void ReverbControls::updateBrirLabel()
     
     brirMenu.setText (text, dontSendNotification);
 }
-
-void ReverbControls::updateDistanceAttenuation() {}
 
 //==============================================================================
 void ReverbControls::changeListenerCallback (ChangeBroadcaster *source)

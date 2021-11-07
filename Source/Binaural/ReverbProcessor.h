@@ -2,7 +2,7 @@
 * \class ReverbProcessor
 *
 * \brief Declaration of Toolkit3dtiProcessor interface.
-* \date  October 2021
+* \date  November 2021
 *
 * \authors Reactify Music LLP: R. Hrafnkelsson ||
 * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||
@@ -64,7 +64,6 @@ public:
     /** Public parameters */
     AudioParameterBool  reverbEnabled;
     AudioParameterFloat reverbLevel;               // ranges from -30 to +6 dB
-    AudioParameterFloat reverbDistanceAttenuation; // ranges from -6 to 0 dB
     AudioParameterInt   reverbOrder;               // ranges from 0 to 2
     
     /** The index of the currently selected BRIR. Setting this will trigger a BRIR reload.

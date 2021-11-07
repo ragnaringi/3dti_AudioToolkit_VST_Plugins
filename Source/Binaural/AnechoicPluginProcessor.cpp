@@ -2,7 +2,7 @@
 * \class AnechoicPluginProcessor
 *
 * \brief Declaration of AnechoicPluginProcessor interface.
-* \date  October 2021
+* \date  November 2021
 *
 * \authors Reactify Music LLP: R. Hrafnkelsson ||
 * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||
@@ -77,6 +77,8 @@ AnechoicPluginProcessor::AnechoicPluginProcessor()
     treeState.createAndAddParameter (std::make_unique<Parameter> ("Source Attenuation", "Src Attenuation", "", getCore().sourceDistanceAttenuation.range, getCore().sourceDistanceAttenuation.get(), nullptr, nullptr));
     treeState.addParameterListener ("Source Attenuation", this);
     
+    addBooleanHostParameter (treeState, "Enable Rev Dist Attenuation", getCore().enableReverbDistanceAttenuation.get());
+    treeState.addParameterListener ("Enable Rev Dist Attenuation", this);
     treeState.createAndAddParameter (std::make_unique<Parameter> ("Reverb Attenuation", "Rev Attenuation", "", getCore().reverbDistanceAttenuation.range, getCore().reverbDistanceAttenuation.get(), nullptr, nullptr));
     treeState.addParameterListener ("Reverb Attenuation", this);
     
@@ -344,6 +346,7 @@ void AnechoicPluginProcessor::updateHostParameters()
     {"Y", position.y},
     {"Z", position.z},
     {"Source Attenuation", getCore().sourceDistanceAttenuation},
+    {"Enable Rev Dist Attenuation", getCore().enableReverbDistanceAttenuation},
     {"Reverb Attenuation", getCore().reverbDistanceAttenuation},
     {"Near Field", getCore().enableNearDistanceEffect},
     {"Far Field", getCore().enableFarDistanceEffect},
@@ -392,6 +395,8 @@ void AnechoicPluginProcessor::parameterChanged (const String& parameterID, float
     position.z = newValue;
   } else if ( parameterID == "Source Attenuation" ) {
     getCore().sourceDistanceAttenuation = newValue;
+  } else if ( parameterID == "Enable Rev Dist Attenuation" ) {
+    getCore().enableReverbDistanceAttenuation = (bool)newValue;
   } else if ( parameterID == "Reverb Attenuation" ) {
     getCore().reverbDistanceAttenuation = newValue;
   } else if ( parameterID == "Near Field" ) {

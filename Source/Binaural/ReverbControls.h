@@ -2,7 +2,7 @@
  * \class ReverbControls
  *
  * \brief Declaration of ReverbControls interface.
- * \date  October 2021
+ * \date  November 2021
  *
  * \authors Reactify Music LLP: R. Hrafnkelsson ||
  * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||
@@ -52,8 +52,6 @@ public:
     {
         if (slider == &gainSlider)
             mReverb.reverbLevel = (float)slider->getValue();
-        else
-            mReverb.reverbDistanceAttenuation = (float)slider->getValue();
     }
     
     void brirMenuChanged()
@@ -71,7 +69,6 @@ private:
     //==========================================================================
     void updateBypass();
     void updateBrirLabel();
-    void updateDistanceAttenuation();
     
     //==========================================================================
     ReverbProcessor& mReverb;
@@ -80,9 +77,6 @@ private:
     ComboBox brirMenu;
     Label gainLabel;
     Slider gainSlider;
-    ToggleButton distanceAttenuationToggle;
-    Label distanceAttenuationLabel;
-    Slider distanceAttenuationSlider;
     std::unique_ptr<FileChooser> fc;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReverbControls)

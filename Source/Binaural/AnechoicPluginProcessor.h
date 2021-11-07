@@ -2,7 +2,7 @@
  * \class AnechoicPluginProcessor
  *
  * \brief Declaration of AnechoicPluginProcessor interface.
- * \date  October 2021
+ * \date  November 2021
  *
  * \authors Reactify Music LLP: R. Hrafnkelsson ||
  * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||

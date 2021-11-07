@@ -2,7 +2,7 @@
 * \class ReverbControls
 *
 * \brief Declaration of ReverbControls interface.
-* \date  June 2019
+* \date  November 2021
 *
 * \authors Reactify Music LLP: R. Hrafnkelsson ||
 * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||
@@ -11,7 +11,7 @@
 * \b Project: 3DTI (3D-games for TUNing and lEarnINg about hearing aids) ||
 * \b Website: http://3d-tune-in.eu/
 *
-* \b Copyright: University of Malaga and Imperial College London - 2019
+* \b Copyright: University of Malaga and Imperial College London - 2021
 *
 * \b Licence: This copy of the 3D Tune-In Toolkit Plugin is licensed to you under the terms described in the LICENSE.md file included in this distribution.
 *
@@ -26,21 +26,15 @@ ReverbControls::ReverbControls (AnechoicPluginProcessor& p)
   ,  distanceAttenuationLabel("Distance Label", "Reverb dB attenuation per double distance")
 {
     distanceAttenuationToggle.setButtonText ("On/Off");
-    distanceAttenuationToggle.setToggleState (true, dontSendNotification);
-    distanceAttenuationToggle.onClick = [this] { updateDistanceAttenuation(); };
     addAndMakeVisible (distanceAttenuationToggle);
 
     setLabelStyle (distanceAttenuationLabel);
     distanceAttenuationLabel.setJustificationType (Justification::right);
     addAndMakeVisible (distanceAttenuationLabel);
 
-    mapParameterToSlider (distanceAttenuationSlider, mCore.reverbDistanceAttenuation);
     distanceAttenuationSlider.setTextValueSuffix (" dB");
     distanceAttenuationSlider.setTextBoxStyle (Slider::TextBoxRight, false, 65, 24);
     addAndMakeVisible (distanceAttenuationSlider );
-    distanceAttenuationSlider.onValueChange = [=] {
-        mCore.reverbDistanceAttenuation = distanceAttenuationSlider.getValue();
-    };
   
     bypassToggle.setButtonText("On/Off");
     bypassToggle.setToggleState(true, dontSendNotification);
@@ -50,8 +44,11 @@ ReverbControls::ReverbControls (AnechoicPluginProcessor& p)
     updateGui();
 }
 
-void ReverbControls::updateGui() {
-    distanceAttenuationSlider.setValue (mCore.reverbDistanceAttenuation, dontSendNotification);
+void ReverbControls::updateGui()
+{
+    bool distanceAttenuationEnabled = mProcessor.getCore().enableReverbDistanceAttenuation;
+    distanceAttenuationLabel.setEnabled (distanceAttenuationEnabled);
+    distanceAttenuationSlider.setEnabled (distanceAttenuationEnabled);
 }
 
 void ReverbControls::updateBypass() {
@@ -62,13 +59,4 @@ void ReverbControls::updateBypass() {
     mProcessor.getSources().front()->DisableReverbProcess();
   }
   setAlpha( enabled + 0.4f );
-}
-
-void ReverbControls::updateDistanceAttenuation() {
-  auto source = mProcessor.getSources().front();
-  if (distanceAttenuationToggle.getToggleState()) {
-    source->EnableDistanceAttenuationReverb();
-  } else {
-    source->DisableDistanceAttenuationReverb();
-  }
 }

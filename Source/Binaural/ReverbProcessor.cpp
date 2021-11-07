@@ -2,7 +2,7 @@
 * \class ReverbProcessor
 *
 * \brief Declaration of Toolkit3dtiProcessor interface.
-* \date  October 2021
+* \date  November 2021
 *
 * \authors Reactify Music LLP: R. Hrafnkelsson ||
 * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||
@@ -28,7 +28,6 @@ ReverbProcessor::ReverbProcessor (Binaural::CCore& core)
   :  Thread ("ReverbProcessor")
   ,  reverbEnabled ("Reverb Enabled", "Reverb Enabled", true)
   ,  reverbLevel ("Reverb Level", "Reverb Level", NormalisableRange<float> (-30.f, 6.f, 0.1f), -3.f)
-  ,  reverbDistanceAttenuation ("Reverb Distance Attenuation", "Reverb Distance Attenuation", NormalisableRange<float> (-6.f, 0.f, 0.1f), -3.f)
   ,  reverbOrder ("Reverb Order", "Reverb Order", 0, 2, 1)
   ,  reverbBRIR ("Reverb BRIR", "Reverb BRIR", 0, BundledBRIRs.size() + 1, 0)
   ,  mCore (core)
@@ -292,10 +291,6 @@ void ReverbProcessor::resetBRIRIndex()
 //==============================================================================
 void ReverbProcessor::updateParameters()
 {
-    auto magnitudes = mCore.GetMagnitudes();
-    magnitudes.SetReverbDistanceAttenuation (reverbDistanceAttenuation);
-    mCore.SetMagnitudes (magnitudes);
-    
     mEnvironment->SetReverberationOrder (TReverberationOrder (reverbOrder.get()));
 }
 

@@ -2,7 +2,7 @@
 * \class Toolkit3dtiPluginAudioProcessor
 *
 * \brief Declaration of Toolkit3dtiPluginAudioProcessor interface.
-* \date  October 2021
+* \date  November 2021
 *
 * \authors Reactify Music LLP: R. Hrafnkelsson ||
 * Coordinated by , A. Reyes-Lecuona (University of Malaga) and L.Picinali (Imperial College London) ||
@@ -85,7 +85,10 @@ Toolkit3dtiPluginAudioProcessor::Toolkit3dtiPluginAudioProcessor()
   treeState.createAndAddParameter (std::make_unique<Parameter> ("Reverb Level", "Reverb Level", "", getReverbProcessor().reverbLevel.range, getReverbProcessor().reverbLevel.get(), nullptr, nullptr));
   treeState.addParameterListener ("Reverb Level", this);
   
-  treeState.createAndAddParameter (std::make_unique<Parameter> ("Reverb Attenuation", "Rev Attenuation", "", getReverbProcessor().reverbDistanceAttenuation.range, getReverbProcessor().reverbDistanceAttenuation.get(), nullptr, nullptr));
+  addBooleanHostParameter (treeState, "Enable Rev Dist Attenuation", getCore().enableReverbDistanceAttenuation.get());
+  treeState.addParameterListener ("Enable Rev Dist Attenuation", this);
+    
+  treeState.createAndAddParameter (std::make_unique<Parameter> ("Reverb Attenuation", "Rev Attenuation", "", getCore().reverbDistanceAttenuation.range, getCore().reverbDistanceAttenuation.get(), nullptr, nullptr));
   treeState.addParameterListener ("Reverb Attenuation", this);
   
   addBooleanHostParameter(treeState, "Near Field", getCore().enableNearDistanceEffect);
@@ -333,7 +336,8 @@ void Toolkit3dtiPluginAudioProcessor::updateHostParameters() {
     {"Z", position.z},
     {"Source Attenuation", getCore().sourceDistanceAttenuation},
     {"Reverb Gain", getReverbProcessor().reverbLevel},
-    {"Reverb Attenuation", getReverbProcessor().reverbDistanceAttenuation},
+    {"Enable Rev Dist Attenuation", getCore().enableReverbDistanceAttenuation},
+    {"Reverb Attenuation", getCore().reverbDistanceAttenuation},
     {"Near Field", getCore().enableNearDistanceEffect},
     {"Far Field", getCore().enableFarDistanceEffect},
     {"Custom Head", getCore().enableCustomizedITD},
@@ -386,8 +390,10 @@ void Toolkit3dtiPluginAudioProcessor::parameterChanged(const String& parameterID
     getCore().sourceDistanceAttenuation = newValue;
   } else if ( parameterID == "Reverb Level" ) {
     getReverbProcessor().reverbLevel = newValue;
+  } else if ( parameterID == "Enable Rev Dist Attenuation" ) {
+    getCore().enableReverbDistanceAttenuation = (bool)newValue;
   } else if ( parameterID == "Reverb Attenuation" ) {
-    getReverbProcessor().reverbDistanceAttenuation = newValue;
+    getCore().reverbDistanceAttenuation = newValue;
   } else if ( parameterID == "Near Field" ) {
     getCore().enableNearDistanceEffect = (int)(newValue + 0.49f);
   } else if ( parameterID == "Far Field" ) {
