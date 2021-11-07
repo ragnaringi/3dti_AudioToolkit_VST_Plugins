@@ -337,7 +337,7 @@ void AnechoicPluginProcessor::updateHostParameters()
   auto sources = getCore().getSources();
     
   std::unordered_map<String, float> parameters = {
-      {"Azimuth", AzimuthMapper::fromToolkit (position.GetAzimuthDegrees())},
+    {"Azimuth", AzimuthMapper::fromToolkit (position.GetAzimuthDegrees())},
     {"Distance", position.GetDistance()},
     {"Elevation", mapElevationToSliderValue(position.GetElevationDegrees())},
     {"X", position.x},
