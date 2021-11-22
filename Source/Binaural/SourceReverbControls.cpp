@@ -36,9 +36,7 @@ ReverbControls::ReverbControls (AnechoicPluginProcessor& p)
     distanceAttenuationSlider.setTextBoxStyle (Slider::TextBoxRight, false, 65, 24);
     addAndMakeVisible (distanceAttenuationSlider );
   
-    bypassToggle.setButtonText("On/Off");
-    bypassToggle.setToggleState(true, dontSendNotification);
-    bypassToggle.onClick = [this] { updateBypass(); };
+    bypassToggle.setButtonText ("On/Off");
     addAndMakeVisible( bypassToggle );
   
     updateGui();
@@ -49,14 +47,5 @@ void ReverbControls::updateGui()
     bool distanceAttenuationEnabled = mProcessor.getCore().enableReverbDistanceAttenuation;
     distanceAttenuationLabel.setEnabled (distanceAttenuationEnabled);
     distanceAttenuationSlider.setEnabled (distanceAttenuationEnabled);
-}
-
-void ReverbControls::updateBypass() {
-  bool enabled = bypassToggle.getToggleState();
-  if ( enabled  ) {
-    mProcessor.getSources().front()->EnableReverbProcess();
-  } else {
-    mProcessor.getSources().front()->DisableReverbProcess();
-  }
-  setAlpha( enabled + 0.4f );
+    setAlpha ((float)bypassToggle.getToggleState() + 0.4f);
 }

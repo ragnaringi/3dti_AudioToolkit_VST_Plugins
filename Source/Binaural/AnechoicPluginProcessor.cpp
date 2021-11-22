@@ -355,12 +355,6 @@ void AnechoicPluginProcessor::updateHostParameters()
     {"HRFT", getCore().getHrtfIndex() },
   };
 
-    if (sources.size() > 0)
-    {
-        parameters["Enable Anechoic"] = sources.front()->IsAnechoicProcessEnabled();
-        parameters["Enable Reverb"] = sources.front()->IsReverbProcessEnabled();
-    }
-
   for (auto const & parameter : parameters)
   {
     if (AudioProcessorParameter* p = treeState.getParameter(parameter.first))

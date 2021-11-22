@@ -64,14 +64,13 @@ public:
 
   void loadCustomBRIR(String fileTypes);
   
-  ToggleButton bypassToggle;
-  
 private:
     //==========================================================================
-    void updateBypass();
-  
     AnechoicPluginProcessor& mProcessor;
     AnechoicProcessor& mCore;
+    
+    ToggleButton bypassToggle;
+    AudioProcessorValueTreeState::ButtonAttachment bypassAttachment {mProcessor.treeState, "Enable Reverb", bypassToggle};
   
     ToggleButton distanceAttenuationToggle;
     AudioProcessorValueTreeState::ButtonAttachment buttonAttachment {mProcessor.treeState, "Enable Rev Dist Attenuation", distanceAttenuationToggle};
